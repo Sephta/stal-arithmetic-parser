@@ -11,18 +11,28 @@ enum Operator {
   Divide   = 47
 };
 
+/* Interface / Abstract Base Class for  */
 class AtomicValue
+{
+
+public:
+  virtual ~AtomicValue();
+
+  virtual int getValue() = 0;
+};
+
+class IntNumber : AtomicValue 
 {
 protected:
   int value;
 
 public:
-  AtomicValue();
-  AtomicValue(int value);
+  IntNumber();
+  IntNumber(int value);
+  ~IntNumber();
 
   int getValue();
-  void setValue(int newValue);
-
+  void setValue(int newValue); 
 };
 
 class Parser

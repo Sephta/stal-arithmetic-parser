@@ -13,7 +13,7 @@ int main(int argc, char** argv)
   
   cout << endl;
 
-  AtomicValue* av_test = new AtomicValue(42);
+  IntNumber* av_test = new IntNumber(42);
 
   Operator newOp = Operator::Add;
 
