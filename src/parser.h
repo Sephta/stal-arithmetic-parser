@@ -8,7 +8,7 @@ enum Operator {
   Subtract,
   Multiply,
   Divide
-}op;
+};
 
 class AtomicValue
 {
