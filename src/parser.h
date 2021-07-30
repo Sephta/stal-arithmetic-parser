@@ -2,12 +2,13 @@
  * 07.29.2021
  * Rudimentary Arithmetic Parser
 */
+#include <string>
 
 enum Operator {
-  Add,
-  Subtract,
-  Multiply,
-  Divide
+  Add      = 43,
+  Subtract = 45,
+  Multiply = 42,
+  Divide   = 47
 };
 
 class AtomicValue
@@ -22,4 +23,16 @@ public:
   int getValue();
   void setValue(int newValue);
 
+};
+
+class Parser
+{
+  public:
+    std::string expr;
+
+  public:
+    Parser();
+
+  char currentToken();
+  char nextToken();
 };
