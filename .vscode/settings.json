@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.js": "javascriptreact",
         "array": "cpp",
         "atomic": "cpp",
         "bit": "cpp",
@@ -43,6 +44,9 @@
         "sstream": "cpp",
         "stdexcept": "cpp",
         "streambuf": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "xstring": "cpp",
+        "xmemory": "cpp",
+        "xutility": "cpp"
     }
 }
