@@ -11,13 +11,12 @@ enum Operator {
   Divide   = 47
 };
 
-/* Interface / Abstract Base Class for  */
+/* Interface / Abstract Base Class for Foundational Data Classes */
 class AtomicValue
 {
 
 public:
   virtual ~AtomicValue();
-
   virtual int getValue() = 0;
 };
 
