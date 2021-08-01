@@ -104,19 +104,31 @@ char Parser::nextToken() { return *(++this->expr.begin()); };
 
 char Parser::popExpression()
 {
-  char result = *(this->expr.begin());
+  char result;
+  if(result = *(this->expr.begin()));
+  else
+  {
+    std::cerr << std::endl << "WARNING: missing enclosing parenthesis \')\'." << std::endl;
+    return '\0';
+  }
 
   this->expr.erase(this->expr.begin());
 
   return result;
 };
 
+/* evaluate()
+ * @brief Parses and evaluates the expression stored in the 'expr' attribute.
+ * @returns the result of parsing and evaluating 'expr' as an int.
+*/
 int Parser::evaluate()
 {
   AtomicValue* evaluation = nullptr;
 
   if (this->isNumber(this->currentToken()))
+  {
     evaluation = (AtomicValue*) new IntNumber(this->popExpression());
+  }
   else if (this->currentToken() == '(')
   {
     this->popExpression(); // Remove '('
@@ -124,8 +136,8 @@ int Parser::evaluate()
     if (this->isOperator(this->nextToken()))
     {
       evaluation = (AtomicValue*) new IntExpression(new IntNumber(this->popExpression()),  // Left Hand Side
-                                                  (Operator) this->popExpression(),      // Operator
-                                                  new IntNumber(this->popExpression())); // Right Hand Side
+                                                    (Operator) this->popExpression(),      // Operator
+                                                    new IntNumber(this->popExpression())); // Right Hand Side
     }
     else
     {
@@ -148,7 +160,11 @@ int Parser::evaluate()
 
       if (this->isNumber(this->currentToken()))
       {
-        evaluation = (AtomicValue*) new IntExpression(new IntNumber(evaluation->evaluate()), 
+        int lhs = evaluation->evaluate();
+
+        if (evaluation) delete evaluation;
+
+        evaluation = (AtomicValue*) new IntExpression(new IntNumber(lhs), 
                                                       newOp,
                                                       new IntNumber(this->popExpression()));
       }
@@ -160,13 +176,18 @@ int Parser::evaluate()
 
         if (this->isOperator(this->nextToken()))
         {
+          int lhs = evaluation->evaluate();
+
+          if (evaluation) delete evaluation;
+
           rhs = (AtomicValue*) new IntExpression(new IntNumber(this->popExpression()), 
                                                  (Operator) this->popExpression(), 
                                                  new IntNumber(this->popExpression()));
 
-          evaluation = (AtomicValue*) new IntExpression(new IntNumber(evaluation->evaluate()),
+          evaluation = (AtomicValue*) new IntExpression(new IntNumber(lhs),
                                                         newOp,
                                                         new IntNumber(rhs->evaluate()));
+          if (rhs) delete rhs;
         }
         else
         {
@@ -183,6 +204,11 @@ int Parser::evaluate()
     }
     else
       break;
+  }
+
+  if (this->expr.size() > 0)
+  {
+    std::cerr << std::endl << "WARNING: there was likely a misplaced \'(\' or \')\' resulting in an incorrect evaluation." << std::endl;
   }
 
   int result = evaluation->evaluate();

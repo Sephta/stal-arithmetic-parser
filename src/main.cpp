@@ -88,19 +88,6 @@ int main(int argc, char** argv)
   
   cout<< endl;
 
-  // IntNumber* numTest = new IntNumber('6');
-  // IntNumber* numTest2(numTest);
-
-  // cerr << "Num Test: " << numTest->evaluate() << " , " << numTest2->evaluate() << endl << endl;
-
-  // IntExpression* exprTest = new IntExpression(Operator::Add, numTest, numTest2);
-
-  // exprTest->print(cerr);
-
-  // cerr << "Evaluation: " << exprTest->evaluate() << endl;
-
-  cerr << endl;
-
   Parser* parser = new Parser(expression);
 
   cerr << "Evaluating Parser: " << parser->evaluate() << endl;

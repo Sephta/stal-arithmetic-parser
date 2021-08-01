@@ -53,8 +53,8 @@ public:
 class IntExpression : AtomicValue
 {
   protected:
-    Operator op;
     IntNumber* lhs;
+    Operator op;
     IntNumber* rhs;
 
   public:
