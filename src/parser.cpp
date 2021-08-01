@@ -37,7 +37,6 @@ void Number::setValue(char newValue) { this->value = (double)(value - '0'); };
 
 
 #pragma region EXPRESSION
-
 Expression::Expression() : lhs(0), op(Operator::Add), rhs(0) {};
 
 Expression::Expression(AtomicValue* lhs, Operator op, AtomicValue* rhs) : lhs(lhs), op(op), rhs(rhs) {};
@@ -83,7 +82,7 @@ void Expression::print(std::ostream& output)
 
 
 #pragma region PARSER
-Parser::Parser() {};
+Parser::Parser() : expr((std::string)"") {};
 
 Parser::Parser(std::string expression) : expr(expression) {};
 
