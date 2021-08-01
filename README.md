@@ -6,7 +6,7 @@
 
 ---
 
-Rudimentary command line arithmetic parser. Calculates simple arithmetic expressions of the form:
+Rudimentary arithmetic parser executable on the command line. Built with C++11 using standard libraries. Calculates simple arithmetic expressions of the form:
 
 * *EXPRESSION* : `(2 + 2) | (3 * 7) | (4 / 2) | (5 - 2)`
 * *VALUE* : `NUMBER` (i.e. within the set of integers)
