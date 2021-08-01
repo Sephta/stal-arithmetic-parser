@@ -26,7 +26,7 @@ class AtomicValue
 public:
   AtomicValue();
   virtual ~AtomicValue();
-  virtual int evaluate() = 0;
+  virtual long evaluate() = 0;
 };
 
 /* Class IntNumber
@@ -46,8 +46,46 @@ public:
   IntNumber(IntNumber* iNum);
   ~IntNumber();
 
-  virtual int evaluate();
+  virtual long evaluate();
   void setValue(int newValue); 
+};
+
+class DoubleNumber : AtomicValue
+{
+  protected:
+    double value;
+
+  public:
+    DoubleNumber();
+    DoubleNumber(double value);
+  
+  virtual long evaluate();
+};
+
+class LongNumber : AtomicValue
+{
+  protected:
+    long value;
+  public:
+    LongNumber();
+    LongNumber(long value);
+
+    virtual long evaluate();
+};
+
+class LongExpression : AtomicValue
+{
+  protected:
+    AtomicValue* lhs;
+    Operator op;
+    AtomicValue* rhs;
+
+  public:
+    LongExpression(AtomicValue* lhs, Operator op, AtomicValue* rhs);
+    virtual ~LongExpression();
+
+    virtual long evaluate();
+    void print(std::ostream& output);
 };
 
 class IntExpression : AtomicValue
@@ -61,7 +99,7 @@ class IntExpression : AtomicValue
     IntExpression(IntNumber* lhs, Operator op, IntNumber* rhs);
     virtual ~IntExpression();
 
-    virtual int evaluate();
+    virtual long evaluate();
     void print(std::ostream& output);
 };
 
@@ -78,7 +116,7 @@ class Parser
   char currentToken();
   char nextToken();
 
-  int evaluate();
+  long evaluate();
 
   private:
     char popExpression();

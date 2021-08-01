@@ -45,13 +45,51 @@ IntNumber::IntNumber(IntNumber* iNum)
 
 IntNumber::~IntNumber() {};
 
-int IntNumber::evaluate() { return this->value; };
+long IntNumber::evaluate() { return (long) this->value; };
 void IntNumber::setValue(int newValue) { this->value = newValue; };
 #pragma endregion
 
+LongNumber::LongNumber() {};
+LongNumber::LongNumber(long value) : value(value) {};
+
+long LongNumber::evaluate() { return this->value; };
+
 #pragma region EXPRESSIONS
-// Expression::Expression() {};
-// Expression::~Expression() {};
+
+LongExpression::LongExpression(AtomicValue* lhs, Operator op, AtomicValue* rhs) : lhs(lhs), op(op), rhs(rhs) {};
+LongExpression::~LongExpression() {};
+
+long LongExpression::evaluate()
+{
+  if (this->lhs == nullptr || this->rhs == nullptr)
+    return 0;
+
+  int result = 0;
+
+  switch (this->op)
+  {
+    case Operator::Add:
+      result = lhs->evaluate() + rhs->evaluate();
+      break;
+    case Operator::Subtract:
+      result = lhs->evaluate() - rhs->evaluate();
+      break;
+    case Operator::Multiply:
+      result = lhs->evaluate() * rhs->evaluate();
+      break;
+    case Operator::Divide:
+      result =  lhs->evaluate() / rhs->evaluate();
+      break;
+  }
+
+  return (long) result;
+};
+
+void LongExpression::print(std::ostream& output)
+{
+  output << "Expr: " << this->lhs->evaluate() << " " << (char) this->op << " " << this->rhs->evaluate() << std::endl;
+};
+
 
 IntExpression::IntExpression(IntNumber* lhs, Operator op, IntNumber* rhs) : lhs(lhs), op(op), rhs(rhs) {};
 
@@ -61,7 +99,7 @@ IntExpression::~IntExpression()
   if (rhs) delete rhs;
 };
 
-int IntExpression::evaluate()
+long IntExpression::evaluate()
 {
   if (this->lhs == nullptr || this->rhs == nullptr)
     return 0;
@@ -105,7 +143,7 @@ char Parser::nextToken() { return *(++this->expr.begin()); };
 char Parser::popExpression()
 {
   char result;
-  if(result = *(this->expr.begin()));
+  if(result=*(this->expr.begin()));
   else
   {
     std::cerr << std::endl << "WARNING: missing enclosing parenthesis \')\'." << std::endl;
@@ -121,7 +159,7 @@ char Parser::popExpression()
  * @brief Parses and evaluates the expression stored in the 'expr' attribute.
  * @returns the result of parsing and evaluating 'expr' as an int.
 */
-int Parser::evaluate()
+long Parser::evaluate()
 {
   AtomicValue* evaluation = nullptr;
 
@@ -186,7 +224,7 @@ int Parser::evaluate()
 
           evaluation = (AtomicValue*) new IntExpression(new IntNumber(lhs),
                                                         newOp,
-                                                        new IntNumber(rhs->evaluate()));
+                                                        new IntNumber((int) rhs->evaluate()));
           if (rhs) delete rhs;
         }
         else
@@ -211,7 +249,7 @@ int Parser::evaluate()
     std::cerr << std::endl << "WARNING: there was likely a misplaced \'(\' or \')\' resulting in an incorrect evaluation." << std::endl;
   }
 
-  int result = evaluation->evaluate();
+  auto result = evaluation->evaluate();
   
   if (evaluation) delete evaluation;
   
