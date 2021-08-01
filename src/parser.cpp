@@ -82,7 +82,7 @@ void Expression::print(std::ostream& output)
 
 
 #pragma region PARSER
-Parser::Parser() : expr((std::string)"") {};
+Parser::Parser() : expr((std::string)"0+0") {};
 
 Parser::Parser(std::string expression) : expr(expression) {};
 

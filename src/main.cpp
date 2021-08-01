@@ -121,6 +121,12 @@ void parseExpression(std::string expression)
   
   cout<< endl;
 
+  if (expression == (std::string)"")
+  {
+    cerr << "ERROR: Program was provided empty expression to parse. Exiting..." << endl;
+    exit(EXIT_FAILURE);
+  }
+
   Parser* parser = new Parser(expression);
 
   cout.precision(17);
