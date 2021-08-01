@@ -1,5 +1,5 @@
 /* Seth Tal
- * 07.29.2021
+ * 07.31.2021
  * Rudimentary Arithmetic Parser
 */
 
@@ -72,19 +72,17 @@ void printUsageError()
 */
 int programUsage(int argc, char** argv)
 {
-  int result = 1;
+  int result = 0;
 
   char flag = getFlagFromArgs(argv);
 
   switch (flag)
   {
     case 'f':
-      if (argc != 3) result = 0;
-      else result = 1;
+      if (argc == 3) result = 1;
       break;
     case 's':
-      if (argc != 3) result = 0;
-      else result = 1;
+      if (argc == 3) result = 1;
       break;
   }
 
@@ -112,22 +110,26 @@ void parseExpression(std::string expression)
 {
   using namespace std;
 
-  cout << "Expression to be parsed: " << expression << endl;
+  cout << endl << "---" << endl;
+  cout << endl;
 
-  // std::string expression = getExpressionFromArgs(argv);
+  cout << "Expression to be parsed:\t\t" << expression << endl;
+
+  // Strips spaces from the string.
   expression.erase(remove_if(expression.begin(), expression.end(), static_cast<int(&)(int)>(std::isspace)), expression.end());
-
-  cout << "After stripping whitespace: " << expression << endl;
+  // cout << "After stripping whitespace: " << expression << endl;
   
   cout<< endl;
 
   Parser* parser = new Parser(expression);
 
-  cerr << "Parser evaluation result: " << parser->evaluate() << endl;
+  cout.precision(17);
+  cout << "Parser evaluated the expression to:\t" << parser->evaluate() << endl;
+
+  cout << endl << "---" << endl;
+  cout << endl;
 
   // PROGRAM CLEANUP
-  cout << endl << "Cleaning program..." << endl;
-  cout << endl;
   delete parser;
 }
 
@@ -171,7 +173,7 @@ int main(int argc, char** argv)
 {
   using namespace std;
 
-  cout << "PROGRAM BEGIN..." << endl << endl;
+  cout << endl << "PROGRAM BEGIN..." << endl << endl;
 
   // debugInput(argc, argv);
 
@@ -183,7 +185,7 @@ int main(int argc, char** argv)
   }
 
   char flag = getFlagFromArgs(argv);
-  std::cerr << "PROGRAM FLAG: " << flag << std::endl << std::endl;
+  // std::cerr << "PROGRAM FLAG: " << flag << std::endl << std::endl;
 
   switch (flag)
   {
@@ -195,5 +197,5 @@ int main(int argc, char** argv)
       break;
   }
 
-  cout << endl << "PROGRAM END..." << endl;
+  cout << endl << "PROGRAM END..." << endl << endl;
 }

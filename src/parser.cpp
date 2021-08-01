@@ -1,5 +1,5 @@
 /* Seth Tal
- * 07.29.2021
+ * 07.31.2021
  * Rudimentary Arithmetic Parser
 */
 
@@ -10,101 +10,48 @@
 #pragma region ATOMIC_VALUE
 AtomicValue::AtomicValue() {};
 AtomicValue::~AtomicValue() {};
+
+void AtomicValue::print(std::ostream& output) { output << this->evaluate() << std::endl; };
 #pragma endregion
 
-#pragma region INT_NUMBER
-IntNumber::IntNumber()
-{
-  this->value = 0;
-}
 
-IntNumber::IntNumber(int value)
+#pragma region NUMBER
+Number::Number() : value(0) {};
+Number::Number(Number* num) { this->value = num->evaluate(); };
+Number::Number(char value) { this->value = (double)(value - '0'); };
+Number::Number(int value) { this->value = (double) value; };
+Number::Number(long value) { this->value = (double) value; };
+Number::Number(double value) { this->value = value; };
+
+Number::~Number() {}; // Does nothing
+
+double Number::evaluate() { return this->value; };
+
+void Number::print(std::ostream& output)
 {
-  this->value = value;
+  output << "<Num: " << this->evaluate() << ">" << std::endl;
 };
 
-IntNumber::IntNumber(char value)
-{
-  this->value = (int)(value - '0');
-};
-
-IntNumber::IntNumber(char* value)
-{
-  this->value = atoi((const char *) value);
-};
-
-IntNumber::IntNumber(const char* value)
-{
-  this->value = atoi(value);
-};
-
-IntNumber::IntNumber(IntNumber* iNum)
-{
-  this->value = iNum->evaluate();
-};
-
-IntNumber::~IntNumber() {};
-
-long IntNumber::evaluate() { return (long) this->value; };
-void IntNumber::setValue(int newValue) { this->value = newValue; };
+void Number::setValue(char newValue) { this->value = (double)(value - '0'); };
 #pragma endregion
 
-LongNumber::LongNumber() {};
-LongNumber::LongNumber(long value) : value(value) {};
 
-long LongNumber::evaluate() { return this->value; };
+#pragma region EXPRESSION
 
-#pragma region EXPRESSIONS
+Expression::Expression(AtomicValue* lhs, Operator op, AtomicValue* rhs) : lhs(lhs), op(op), rhs(rhs) {};
 
-LongExpression::LongExpression(AtomicValue* lhs, Operator op, AtomicValue* rhs) : lhs(lhs), op(op), rhs(rhs) {};
-LongExpression::~LongExpression() {};
-
-long LongExpression::evaluate()
-{
-  if (this->lhs == nullptr || this->rhs == nullptr)
-    return 0;
-
-  int result = 0;
-
-  switch (this->op)
-  {
-    case Operator::Add:
-      result = lhs->evaluate() + rhs->evaluate();
-      break;
-    case Operator::Subtract:
-      result = lhs->evaluate() - rhs->evaluate();
-      break;
-    case Operator::Multiply:
-      result = lhs->evaluate() * rhs->evaluate();
-      break;
-    case Operator::Divide:
-      result =  lhs->evaluate() / rhs->evaluate();
-      break;
-  }
-
-  return (long) result;
-};
-
-void LongExpression::print(std::ostream& output)
-{
-  output << "Expr: " << this->lhs->evaluate() << " " << (char) this->op << " " << this->rhs->evaluate() << std::endl;
-};
-
-
-IntExpression::IntExpression(IntNumber* lhs, Operator op, IntNumber* rhs) : lhs(lhs), op(op), rhs(rhs) {};
-
-IntExpression::~IntExpression()
+Expression::~Expression()
 {
   if (lhs) delete lhs;
   if (rhs) delete rhs;
 };
 
-long IntExpression::evaluate()
+double Expression::evaluate()
 {
   if (this->lhs == nullptr || this->rhs == nullptr)
     return 0;
 
-  int result = 0;
+  double result = 0;
 
   switch (this->op)
   {
@@ -125,24 +72,29 @@ long IntExpression::evaluate()
   return result;
 };
 
-void IntExpression::print(std::ostream& output)
+void Expression::print(std::ostream& output)
 {
   output << "Expr: " << this->lhs->evaluate() << " " << (char) this->op << " " << this->rhs->evaluate() << std::endl;
 };
+
 #pragma endregion
+
 
 #pragma region PARSER
 Parser::Parser() {};
 
-Parser::Parser(std::string toParse) : expr(toParse), curr(0) {};
+Parser::Parser(std::string toParse) : expr(toParse) {};
+
+Parser::~Parser() {}; // Does nothing tbh
 
 char Parser::currentToken() { return *(this->expr.begin()); };
 
 char Parser::nextToken() { return *(++this->expr.begin()); };
 
-char Parser::popExpression()
+char Parser::popToken()
 {
   char result;
+
   if(result=*(this->expr.begin()));
   else
   {
@@ -156,26 +108,26 @@ char Parser::popExpression()
 };
 
 /* evaluate()
- * @brief Parses and evaluates the expression stored in the 'expr' attribute.
- * @returns the result of parsing and evaluating 'expr' as an int.
+ * @brief Parses and evaluates the expression provided to the Parser object.
+ * @returns the result of paring and evaluating as a double int.
 */
-long Parser::evaluate()
+double Parser::evaluate()
 {
   AtomicValue* evaluation = nullptr;
 
   if (this->isNumber(this->currentToken()))
   {
-    evaluation = (AtomicValue*) new IntNumber(this->popExpression());
+    evaluation = (AtomicValue*) new Number(this->popToken());
   }
   else if (this->currentToken() == '(')
   {
-    this->popExpression(); // Remove '('
+    this->popToken(); // Remove '('
 
     if (this->isOperator(this->nextToken()))
     {
-      evaluation = (AtomicValue*) new IntExpression(new IntNumber(this->popExpression()),  // Left Hand Side
-                                                    (Operator) this->popExpression(),      // Operator
-                                                    new IntNumber(this->popExpression())); // Right Hand Side
+      evaluation = (AtomicValue*) new Expression((AtomicValue*) new Number(this->popToken()),  // Left Hand Side
+                                                  (Operator) this->popToken(),      // Operator
+                                                  (AtomicValue*) new Number(this->popToken())); // Right Hand Side
     }
     else
     {
@@ -187,14 +139,14 @@ long Parser::evaluate()
       exit(EXIT_FAILURE);
     }
 
-    this->popExpression(); // Remove ')'
+    this->popToken(); // Remove ')'
   }
 
   while (evaluation)
   {
     if (this->isOperator(this->currentToken()))
     {
-      Operator newOp = (Operator) this->popExpression();
+      Operator newOp = (Operator) this->popToken();
 
       if (this->isNumber(this->currentToken()))
       {
@@ -202,13 +154,13 @@ long Parser::evaluate()
 
         if (evaluation) delete evaluation;
 
-        evaluation = (AtomicValue*) new IntExpression(new IntNumber(lhs), 
-                                                      newOp,
-                                                      new IntNumber(this->popExpression()));
+        evaluation = (AtomicValue*) new Expression((AtomicValue*) new Number(lhs), 
+                                                    newOp,
+                                                    (AtomicValue*) new Number(this->popToken()));
       }
       else if (this->currentToken() == '(') 
       {
-        this->popExpression(); // Remove '('
+        this->popToken(); // Remove '('
 
         AtomicValue* rhs;
 
@@ -218,13 +170,13 @@ long Parser::evaluate()
 
           if (evaluation) delete evaluation;
 
-          rhs = (AtomicValue*) new IntExpression(new IntNumber(this->popExpression()), 
-                                                 (Operator) this->popExpression(), 
-                                                 new IntNumber(this->popExpression()));
+          rhs = (AtomicValue*) new Expression((AtomicValue*) new Number(this->popToken()), 
+                                              (Operator) this->popToken(), 
+                                              (AtomicValue*) new Number(this->popToken()));
 
-          evaluation = (AtomicValue*) new IntExpression(new IntNumber(lhs),
-                                                        newOp,
-                                                        new IntNumber((int) rhs->evaluate()));
+          evaluation = (AtomicValue*) new Expression((AtomicValue*) new Number(lhs),
+                                                     newOp,
+                                                     (AtomicValue*) new Number((int) rhs->evaluate()));
 
           if (rhs) delete rhs;
         }
@@ -238,7 +190,7 @@ long Parser::evaluate()
           exit(EXIT_FAILURE);
         }
 
-        this->popExpression(); // Remove ')'
+        this->popToken(); // Remove ')'
       }
     }
     else
@@ -250,7 +202,7 @@ long Parser::evaluate()
     std::cerr << std::endl << "WARNING: there was likely a misplaced \'(\' or \')\' resulting in an incorrect evaluation." << std::endl;
   }
 
-  auto result = evaluation->evaluate();
+  double result = evaluation->evaluate();
   
   if (evaluation) delete evaluation;
   

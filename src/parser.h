@@ -1,5 +1,5 @@
 /* Seth Tal
- * 07.29.2021
+ * 07.31.2021
  * Rudimentary Arithmetic Parser
 */
 
@@ -19,62 +19,47 @@ enum Operator {
 };
 
 /* Class AtomicValue
- * @brief Interface / Abstract Base Class for Foundational Data Classes 
+ * @brief Interface / Abstract Base Class for Foundational Data Classes. Everything in this parsing framework will have an evaluation resulting in some concrete value.
 */
 class AtomicValue
 {
   public:
     AtomicValue();
     virtual ~AtomicValue();
-    virtual long evaluate() = 0;
+    virtual double evaluate() = 0;
+    virtual void print(std::ostream& output);
 };
 
-/* Class IntNumber
- * @brief Inherits AtomicValue, represents a numerable type in Integer form.
-*/
-class IntNumber : AtomicValue 
-{
-  protected:
-    int value;
-
-  public:
-    IntNumber();
-    IntNumber(int value);
-    IntNumber(char value);
-    IntNumber(char* value);
-    IntNumber(const char* value);
-    IntNumber(IntNumber* iNum);
-    ~IntNumber();
-
-    virtual long evaluate() override;
-    void setValue(int newValue);
-};
-
-class DoubleNumber : AtomicValue
+class Number : AtomicValue
 {
   protected:
     double value;
-
+  
   public:
-    DoubleNumber();
-    DoubleNumber(double value);
+    // CONSTRUCTORS
 
-  virtual long evaluate();
+    Number();
+    Number(Number* num);
+    Number(char value);
+    Number(int value);
+    Number(long value);
+    Number(double value);
+
+    // DESTRUCTOR
+
+    virtual ~Number() override;
+
+    // OVERRIDES
+
+    virtual double evaluate() override;
+    virtual void print(std::ostream& output) override;
+
+    // METHODS
+
+    void setValue(char newValue);
 };
 
-class LongNumber : AtomicValue
-{
-  protected:
-    long value;
-
-  public:
-    LongNumber();
-    LongNumber(long value);
-
-    virtual long evaluate();
-};
-
-class LongExpression : AtomicValue
+class Expression : AtomicValue
 {
   protected:
     AtomicValue* lhs;
@@ -82,45 +67,43 @@ class LongExpression : AtomicValue
     AtomicValue* rhs;
 
   public:
-    LongExpression(AtomicValue* lhs, Operator op, AtomicValue* rhs);
-    virtual ~LongExpression();
+    Expression(AtomicValue* lhs, Operator op, AtomicValue* rhs);
+    virtual ~Expression() override;
 
-    virtual long evaluate();
-    void print(std::ostream& output);
+    virtual double evaluate() override;
+    virtual void print(std::ostream& output) override;
 };
 
-class IntExpression : AtomicValue
-{
-  protected:
-    IntNumber* lhs;
-    Operator op;
-    IntNumber* rhs;
-
-  public:
-    IntExpression(IntNumber* lhs, Operator op, IntNumber* rhs);
-    virtual ~IntExpression();
-
-    virtual long evaluate();
-    void print(std::ostream& output);
-};
 
 class Parser
 {
-  public:
-    std::string expr;
-    int curr;
 
   public:
+    // ATTRIBUTES
+
+    std::string expr;
+    
+    // CONSTRUCTORS
+
     Parser();
     Parser(std::string toParse);
+    
+    // DESTRUCTOR
 
-  char currentToken();
-  char nextToken();
+    ~Parser();
 
-  long evaluate();
+    // PUBLIC METHOD
+
+    double evaluate();
 
   private:
-    char popExpression();
+
+    // PRIVATE METHODS
+
+    char currentToken();
+    char nextToken();
+    char popToken();
+
     bool isNumber(char token);
     bool isOperator(char token);
 };
