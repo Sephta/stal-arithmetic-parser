@@ -27,7 +27,14 @@ This program was made using Windows Subsystem for Linux in a Ubuntu 20.04.1 LTS 
 -g -W -Wall -std=c++11
 ```
 
-### Step 1. Download and Extract the contents from the .ZIP file
+### Requirements
+
+* Ubuntu 20.04.1 LTS
+  * or Windows Subsystem for Linux (WSL) running Ubuntu 20.04.1 LTS
+* g++ (Ubuntu 9.3.0-10ubuntu2) 9.3.0
+* GNU Make 4.2.1
+
+### Step 1: Download and Extract the contents from the .ZIP file
 
 ```sh
 # File Structure
@@ -47,6 +54,8 @@ This program was made using Windows Subsystem for Linux in a Ubuntu 20.04.1 LTS 
 └── test.txt
 ```
 
+### Step 2
+
 Using the makefiles provided you can make the project which will produce the executable, `parser`, inside the `src` directory.
 
 ```sh
@@ -56,6 +65,8 @@ make
 
 # This will build the linux executable 'parser' inside the ./src directory
 ```
+
+### Step 3
 
 You can either navigate into the `src` directory or simply run the program from root like so:
 
@@ -68,6 +79,8 @@ You can either navigate into the `src` directory or simply run the program from 
 
 ./src/parser -f ./test.txt
 ```
+
+#### Note about file input
 
 The contents of the test file should like like the following:
 
