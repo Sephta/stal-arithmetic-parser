@@ -18,6 +18,7 @@ enum Operator {
   Divide   = 47  // 47 is the ASCII value of '/'
 };
 
+
 /* Base Class AtomicValue
  * @brief Interface / Abstract Base Class for Foundational Data Classes. Everything in this parsing framework will have an evaluation resulting in some concrete value.
 */
@@ -44,6 +45,7 @@ class AtomicValue
     */
     virtual void print(std::ostream& output);
 };
+
 
 /* Child Class Expression
  * @brief Inherits from the AtomicValue interface. A number is a generic object wrapper to return a concrete numerable value as a double.
@@ -108,6 +110,7 @@ class Number : AtomicValue
 
     void setValue(char newValue);
 };
+
 
 /* Child Class Expression
  * @brief Inherits from the AtomicValue interface. An expression is of the form <Atomic> <Operator> <Atomic> and will evaluate based on the implication of its Operator. The Expression class is capable of evaluating for Addition, Subtraction, Division, and Multiplication.
