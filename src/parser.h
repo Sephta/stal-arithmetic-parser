@@ -60,6 +60,7 @@ class Number : AtomicValue
   public:
     // CONSTRUCTORS
 
+    // Will hold a default value of 0
     Number();
 
     /*
@@ -127,6 +128,9 @@ class Expression : AtomicValue
   public:
 
     // CONSTRUCTOR
+
+    // Will hold a default value that will evaluate to 0.
+    Expression();
 
     /*
      * @param lhs The left hand side of the expression
