@@ -46,3 +46,35 @@ This program was made using Windows Subsystem for Linux in a Ubuntu 20.04.1 LTS 
 ├── README.md
 └── test.txt
 ```
+
+Using the makefiles provided you can make the project which will produce the executable, `parser`, inside the `src` directory.
+
+```sh
+# Navigate to the root directory of the project and simply perform the following command:
+
+make
+
+# This will build the linux executable 'parser' inside the ./src directory
+```
+
+You can either navigate into the `src` directory or simply run the program from root like so:
+
+```sh
+# Expression should be enclosed in quotes
+
+./src/parser -s "Expression to Parse"
+
+# Or you can use a .txt file to parse multiple expressions...
+
+./src/parser -f ./test.txt
+```
+
+The contents of the test file should like like the following:
+
+```txt
+1 + 1
+(3 + 4) * 6
+(1 * 4) + (5 * 2)
+```
+
+Where each expression is seperated onto its own line in the file.
