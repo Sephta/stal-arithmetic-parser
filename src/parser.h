@@ -12,37 +12,79 @@
           i.e. "Add" = ASCII value 43 which is equivolent to '+'.
 */
 enum Operator {
-  Add      = 43,
-  Subtract = 45,
-  Multiply = 42,
-  Divide   = 47
+  Add      = 43, // 43 is the ASCII value of '+'
+  Subtract = 45, // 43 is the ASCII value of '-'
+  Multiply = 42, // 42 is the ASCII value of '*'
+  Divide   = 47  // 47 is the ASCII value of '/'
 };
 
-/* Class AtomicValue
+/* Base Class AtomicValue
  * @brief Interface / Abstract Base Class for Foundational Data Classes. Everything in this parsing framework will have an evaluation resulting in some concrete value.
 */
 class AtomicValue
 {
   public:
+    // CONSTRUCTOR
+
     AtomicValue();
+
+    // DESTRUCTOR
+
     virtual ~AtomicValue();
+
+    // PUBLIC METHODS
+
+    /*
+     * @brief Intended to eventually result in a concrete datatype represented as a double.
+    */
     virtual double evaluate() = 0;
+
+    /*
+     * @brief Prints a string representation of this object to the provided output stream
+    */
     virtual void print(std::ostream& output);
 };
 
+/* Child Class Expression
+ * @brief Inherits from the AtomicValue interface. A number is a generic object wrapper to return a concrete numerable value as a double.
+*/
 class Number : AtomicValue
 {
   protected:
+
+    /*
+     * @brief the concrete value of this AtomicValue, represented as a double.
+    */
     double value;
   
   public:
     // CONSTRUCTORS
 
     Number();
+
+    /*
+     * @param num Sets the value of this Number to the value stored in `num`.
+    */
     Number(Number* num);
+
+    /*
+     * @param value Sets the value of this Number to the equivolent char value provided to the constructor
+    */
     Number(char value);
+    
+    /*
+     * @param value Sets the value of this Number to the equivolent int value provided to the constructor
+    */
     Number(int value);
+    
+    /*
+     * @param value Sets the value of this Number to the equivolent long value provided to the constructor
+    */
     Number(long value);
+    
+    /*
+     * @param value Sets the value of this Number to the equivolent double value provided to the constructor
+    */
     Number(double value);
 
     // DESTRUCTOR
@@ -51,7 +93,14 @@ class Number : AtomicValue
 
     // OVERRIDES
 
+    /*
+     * @brief Returns the numerable value of this AtomicValue represented as a double.
+    */
     virtual double evaluate() override;
+    
+    /*
+     * @brief Prints a string representation of this AtomicValue to the provided output stream.
+    */
     virtual void print(std::ostream& output) override;
 
     // METHODS
@@ -59,29 +108,60 @@ class Number : AtomicValue
     void setValue(char newValue);
 };
 
+/* Child Class Expression
+ * @brief Inherits from the AtomicValue interface. An expression is of the form <Atomic> <Operator> <Atomic> and will evaluate based on the implication of its Operator. The Expression class is capable of evaluating for Addition, Subtraction, Division, and Multiplication.
+*/
 class Expression : AtomicValue
 {
   protected:
+  
+    // The left hand side of this Expression. Left hand side is prioritized.
     AtomicValue* lhs;
+
+    // The Operation to perfrom on the Left and Right hand side.
     Operator op;
+
+    // The right hand side of this Expression. Left hand side is prioritized.
     AtomicValue* rhs;
 
   public:
+
+    // CONSTRUCTOR
+
+    /*
+     * @param lhs The left hand side of the expression
+     * @param op The operation to perform on this expression (lhs has priority). Can be expressed as a char ('+' , '-' , '/' , '*')
+     * @param rhs The right hand side of the expression
+    */
     Expression(AtomicValue* lhs, Operator op, AtomicValue* rhs);
+
+    // DESTRUCTOR
     virtual ~Expression() override;
 
+    /*
+     * @brief Performs the provided operation on the Left and Right hand side of the Expression, returns the numerable result represented as a double.
+    */
     virtual double evaluate() override;
+
+    /*
+     * @brief Prints a string representation of this AtomicValue to the provided output stream.
+    */
     virtual void print(std::ostream& output) override;
 };
 
 
+/* Base Class Parser
+ * @brief Each Parser object is provided a std::string to parse and evaluate. Each character in the string is treated as a token. It is standard to provide the Parser a string stripped of any whitespace, and in particular: spaces.
+*/
 class Parser
 {
 
   public:
     // ATTRIBUTES
 
-    // @brief publically accessible attribute continaing the expression to be parsed.
+    /*
+     * @brief publically accessible attribute continaing the expression to be parsed.
+    */
     std::string expr;
     
     // CONSTRUCTORS
@@ -99,9 +179,9 @@ class Parser
 
     // PUBLIC METHOD
 
-    /* evaluate()
+    /* evaluate(void)
      * @brief Parses and evaluates the expression provided to the Parser object.
-     * @returns the result of paring and evaluating as a double int.
+     * @returns the result of paring and evaluating as a double.
     */
     double evaluate();
 
@@ -127,13 +207,13 @@ class Parser
     */
     char popToken();
 
-    /* isNumber(void)
+    /* isNumber(char)
      * @param token compares the ASCII char value of this to '0' through '9'.
      * @returns True if ASCII value between '0' and '9', False otherwise
     */
     bool isNumber(char token);
 
-    /* isOperator(void)
+    /* isOperator(char)
      * @param token compares its ASCII value to '+' , '/' , '-' , and '*'
      * @returns True if ASCII value equals '+' or '/' or '-' or '*', False otherwise
     */
