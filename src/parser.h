@@ -23,10 +23,10 @@ enum Operator {
 */
 class AtomicValue
 {
-public:
-  AtomicValue();
-  virtual ~AtomicValue();
-  virtual long evaluate() = 0;
+  public:
+    AtomicValue();
+    virtual ~AtomicValue();
+    virtual long evaluate() = 0;
 };
 
 /* Class IntNumber
@@ -34,20 +34,20 @@ public:
 */
 class IntNumber : AtomicValue 
 {
-protected:
-  int value;
+  protected:
+    int value;
 
-public:
-  IntNumber();
-  IntNumber(int value);
-  IntNumber(char value);
-  IntNumber(char* value);
-  IntNumber(const char* value);
-  IntNumber(IntNumber* iNum);
-  ~IntNumber();
+  public:
+    IntNumber();
+    IntNumber(int value);
+    IntNumber(char value);
+    IntNumber(char* value);
+    IntNumber(const char* value);
+    IntNumber(IntNumber* iNum);
+    ~IntNumber();
 
-  virtual long evaluate();
-  void setValue(int newValue); 
+    virtual long evaluate() override;
+    void setValue(int newValue);
 };
 
 class DoubleNumber : AtomicValue
@@ -58,7 +58,7 @@ class DoubleNumber : AtomicValue
   public:
     DoubleNumber();
     DoubleNumber(double value);
-  
+
   virtual long evaluate();
 };
 
@@ -66,6 +66,7 @@ class LongNumber : AtomicValue
 {
   protected:
     long value;
+
   public:
     LongNumber();
     LongNumber(long value);

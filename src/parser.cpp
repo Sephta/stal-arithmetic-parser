@@ -225,6 +225,7 @@ long Parser::evaluate()
           evaluation = (AtomicValue*) new IntExpression(new IntNumber(lhs),
                                                         newOp,
                                                         new IntNumber((int) rhs->evaluate()));
+
           if (rhs) delete rhs;
         }
         else
