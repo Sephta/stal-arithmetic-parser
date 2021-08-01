@@ -25,7 +25,7 @@ std::string getExpressionFromArgs(char** argv)
 {
   std::string result(argv[PROGRAM_EXPRESSION]);
 
-  // From <algorithm>...
+  // From <algorithm>, removes all instances of spaces in the string.
   result.erase(remove_if(result.begin(), result.end(), isspace), result.end());
 
   // Returns expression to parse, and strips whitespace...
@@ -47,21 +47,20 @@ char getFlagFromArgs(char** argv)
 }
 
 /* printUsageError()
- * @brief Simply displays program usage info.
+ * @brief Simply displays program usage info to the provided output stream.
+ * @param output The output stream to print to.
 */
-void printUsageError()
+void printUsageError(std::ostream& output)
 {
-  using namespace std;
-
-  cerr << "ERROR: Program usage error." << endl;
-  cerr << endl;
-  cerr << "Usage: ./parser <flag> <input>" << endl;
-  cerr << "Flag Options:" << endl;
-  cerr << "\t-f \"File Mode\"\t\tTells program to run in file mode, must provide path to file in <input>." << endl;
-  cerr << "\t-s \"Standard Mode\"\tTells the program to run in standard mode. Provide expression to parse in quotes.\n\n\t\ti.e. \"1 + 1\" or \"(1 + 2) * 3\"" << endl;
-  cerr << endl;
-  cerr << "For further usage explanation, please refer to the provided README.md document." << endl;
-  cerr << endl;
+  output << "ERROR: Program usage error." << std::endl;
+  output << std::endl;
+  output << "Usage: ./parser <flag> <input>" << std::endl;
+  output << "Flag Options:" << std::endl;
+  output << "\t-f \"File Mode\"\t\tTells program to run in file mode, must provide path to file in <input>." << std::endl;
+  output << "\t-s \"Standard Mode\"\tTells the program to run in standard mode. Provide expression to parse in quotes.\n\n\t\ti.e. \"1 + 1\" or \"(1 + 2) * 3\"" << std::endl;
+  output << std::endl;
+  output << "For further usage explanation, please refer to the provided README.md document." << std::endl;
+  output << std::endl;
 };
 
 /* programUsage(int, char**)
@@ -106,6 +105,10 @@ void debugInput(int argc, char** argv)
   cerr << endl;
 }
 
+/*
+ * @brief Creates a Parser object and provides it the expression arguement. The evaluation is printed to std::cout.
+ * @param expression the expression to be parsed and evaluated.
+*/
 void parseExpression(std::string expression)
 {
   using namespace std;
@@ -139,6 +142,9 @@ void parseExpression(std::string expression)
   delete parser;
 }
 
+/*
+ * @brief Opens and reads the input file line by line passing each line to parseExpression().
+*/
 void FILEMODE(std::string pathToFile)
 {
   std::fstream file;
@@ -162,6 +168,9 @@ void FILEMODE(std::string pathToFile)
   }
 }
 
+/*
+ * @brief Provides the string input to parseExpression().
+*/
 void STANDARDMODE(char** argv)
 {
   std::string expr(argv[PROGRAM_EXPRESSION]);
@@ -170,7 +179,7 @@ void STANDARDMODE(char** argv)
 }
 
 /* main(int, char**)
- * @brief Main program execution loop.
+ * @brief This arithmetic parser program is a rudimentary cli which either reads the provided string input and evalutates it, or opens the provided file path and evaluates line by line.
  * @param argc the number of arguements passed to the executable.
  * @param argv buffer which contains all program arguements passed to the executable.
  * @return exit status as int.
@@ -186,7 +195,7 @@ int main(int argc, char** argv)
   // Rudimentary check to make sure program is being used correctly...
   if (!programUsage(argc, argv))
   {
-    printUsageError();
+    printUsageError(std::cerr);
     exit(EXIT_FAILURE);
   }
 
