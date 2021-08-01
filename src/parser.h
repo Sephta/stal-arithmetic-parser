@@ -106,7 +106,7 @@ class Number : AtomicValue
     */
     virtual void print(std::ostream& output) override;
 
-    // METHODS
+    // PUBLIC METHOD
 
     void setValue(char newValue);
 };
@@ -144,6 +144,8 @@ class Expression : AtomicValue
 
     // DESTRUCTOR
     virtual ~Expression() override;
+
+    // OVERRIDES
 
     /*
      * @brief Performs the provided operation on the Left and Right hand side of the Expression, returns the numerable result represented as a double.
