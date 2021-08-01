@@ -81,12 +81,17 @@ class Parser
   public:
     // ATTRIBUTES
 
+    // @brief publically accessible attribute continaing the expression to be parsed.
     std::string expr;
     
     // CONSTRUCTORS
 
     Parser();
-    Parser(std::string toParse);
+
+    /* Parser(std::string)
+     * @param expression the string containing the expression to be parsed.
+    */
+    Parser(std::string expression);
     
     // DESTRUCTOR
 
@@ -94,16 +99,43 @@ class Parser
 
     // PUBLIC METHOD
 
+    /* evaluate()
+     * @brief Parses and evaluates the expression provided to the Parser object.
+     * @returns the result of paring and evaluating as a double int.
+    */
     double evaluate();
 
   private:
 
     // PRIVATE METHODS
 
+    /* currentToken(void)
+     * @brief Intended to be used as a way of peeking at the current token to be parsed inside of `expr`
+     * @returns a copy of the current token in the expression string
+    */
     char currentToken();
+    
+    /* nextToken(void)
+     * @brief intended to be used as a way of peeking at the next token to be parsed inside of `expr`
+     * @returns a copy of the next token in the expression string (i.e. ++expr.begin())
+    */
     char nextToken();
+    
+    /* popToken(void)
+     * @brief removes and returns the front most token from the `expr` string.
+     * @returns the current token at the front of `expr`
+    */
     char popToken();
 
+    /* isNumber(void)
+     * @param token compares the ASCII char value of this to '0' through '9'.
+     * @returns True if ASCII value between '0' and '9', False otherwise
+    */
     bool isNumber(char token);
+
+    /* isOperator(void)
+     * @param token compares its ASCII value to '+' , '/' , '-' , and '*'
+     * @returns True if ASCII value equals '+' or '/' or '-' or '*', False otherwise
+    */
     bool isOperator(char token);
 };

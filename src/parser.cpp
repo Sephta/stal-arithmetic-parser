@@ -83,34 +83,10 @@ void Expression::print(std::ostream& output)
 #pragma region PARSER
 Parser::Parser() {};
 
-Parser::Parser(std::string toParse) : expr(toParse) {};
+Parser::Parser(std::string expression) : expr(expression) {};
 
 Parser::~Parser() {}; // Does nothing tbh
 
-char Parser::currentToken() { return *(this->expr.begin()); };
-
-char Parser::nextToken() { return *(++this->expr.begin()); };
-
-char Parser::popToken()
-{
-  char result;
-
-  if(result=*(this->expr.begin()));
-  else
-  {
-    std::cerr << std::endl << "WARNING: missing enclosing parenthesis \')\'." << std::endl;
-    return '\0';
-  }
-
-  this->expr.erase(this->expr.begin());
-
-  return result;
-};
-
-/* evaluate()
- * @brief Parses and evaluates the expression provided to the Parser object.
- * @returns the result of paring and evaluating as a double int.
-*/
 double Parser::evaluate()
 {
   AtomicValue* evaluation = nullptr;
@@ -206,6 +182,26 @@ double Parser::evaluate()
   
   if (evaluation) delete evaluation;
   
+  return result;
+};
+
+char Parser::currentToken() { return *(this->expr.begin()); };
+
+char Parser::nextToken() { return *(++this->expr.begin()); };
+
+char Parser::popToken()
+{
+  char result;
+
+  if(result=*(this->expr.begin()));
+  else
+  {
+    std::cerr << std::endl << "WARNING: missing enclosing parenthesis \')\'." << std::endl;
+    return '\0';
+  }
+
+  this->expr.erase(this->expr.begin());
+
   return result;
 };
 
