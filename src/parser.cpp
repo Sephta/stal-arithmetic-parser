@@ -53,9 +53,13 @@ void IntNumber::setValue(int newValue) { this->value = newValue; };
 // Expression::Expression() {};
 // Expression::~Expression() {};
 
-IntExpression::IntExpression(Operator op, IntNumber* lhs, IntNumber* rhs) : op(op), lhs(lhs), rhs(rhs) {};
+IntExpression::IntExpression(IntNumber* lhs, Operator op, IntNumber* rhs) : lhs(lhs), op(op), rhs(rhs) {};
 
-IntExpression::~IntExpression() {};
+IntExpression::~IntExpression()
+{
+  if (lhs) delete lhs;
+  if (rhs) delete rhs;
+};
 
 int IntExpression::evaluate()
 {
@@ -94,83 +98,98 @@ Parser::Parser() {};
 
 Parser::Parser(std::string toParse) : expr(toParse), curr(0) {};
 
-char Parser::currentToken()
-{
-  return this->expr[this->curr];
-};
+char Parser::currentToken() { return *(this->expr.begin()); };
 
-char Parser::nextToken()
+char Parser::nextToken() { return *(++this->expr.begin()); };
+
+char Parser::popExpression()
 {
-  return this->expr[this->curr + 1];
+  char result = *(this->expr.begin());
+
+  this->expr.erase(this->expr.begin());
+
+  return result;
 };
 
 int Parser::evaluate()
 {
-  // Parsing Algorithm outline...
-  /*
-  Expr* expr = new Expr();
+  AtomicValue* evaluation = nullptr;
 
-  while (expression not parsed):
-    curr_token = getToken();
-    if (curr_token == '('):
-      Parser.build_sub_expression();
-    else if (curr_token == NUMBER):
-      IntNumber* newNum = new IntNumber(curr_token);
-      expr.appendAtomic(newNum);
-    else if (curr_token == OPERATOR)
-      Operator newOp = parser.getOperator(OPERATOR);
-      expr.setOperator(newOp);
-    
-    curr_expression = getExpression();
-    if (curr_expression.isValid()):
-      evaluate the expression
-  */
-
-  auto currToken = this->currentToken();
-
-  // AtomicValue* lhs;
-  // Operator op;
-  // AtomicValue* rhs;
-
-  while (this->expr.begin() != this->expr.end())
+  if (this->isNumber(this->currentToken()))
+    evaluation = (AtomicValue*) new IntNumber(this->popExpression());
+  else if (this->currentToken() == '(')
   {
-    // if (currToken == '(')
-    // {
-      
-    // }
-    std::cerr << "Expr: " << this->expr << std::endl;
-    std::cerr << *(this->expr.begin()) << std::endl;
+    this->popExpression(); // Remove '('
 
-    // result.erase(remove_if(result.begin(), result.end(), isspace), result.end());
-    this->expr.erase(this->expr.begin());
+    if (this->isOperator(this->nextToken()))
+    {
+      evaluation = (AtomicValue*) new IntExpression(new IntNumber(this->popExpression()),  // Left Hand Side
+                                                  (Operator) this->popExpression(),      // Operator
+                                                  new IntNumber(this->popExpression())); // Right Hand Side
+    }
+    else
+    {
+      std::cerr << "ERR: Expression enclosed in \'(\' and \')\' must be of the form: <Number> <Operator> <Number>" << std::endl;
+
+      delete evaluation;
+      delete this;
+
+      exit(EXIT_FAILURE);
+    }
+
+    this->popExpression(); // Remove ')'
   }
 
-  // return this->auxEvaluate(this->expr);
-};
-
-int Parser::auxEvaluate(std::string expression)
-{
-  // bool done = false;
-  // while (!done)
-  // {
-  //   auto currentToken = this->currentToken();
-
-  //   if (currentToken == '(')
-  //   {
-  //     // TODO
-  //   }
-  // }
-
-  auto currToken = this->currentToken();
-
-  if (this->isNumber(currToken))
+  while (evaluation)
   {
-    return IntNumber(currToken).evaluate();
+    if (this->isOperator(this->currentToken()))
+    {
+      Operator newOp = (Operator) this->popExpression();
+
+      if (this->isNumber(this->currentToken()))
+      {
+        evaluation = (AtomicValue*) new IntExpression(new IntNumber(evaluation->evaluate()), 
+                                                      newOp,
+                                                      new IntNumber(this->popExpression()));
+      }
+      else if (this->currentToken() == '(') 
+      {
+        this->popExpression(); // Remove '('
+
+        AtomicValue* rhs;
+
+        if (this->isOperator(this->nextToken()))
+        {
+          rhs = (AtomicValue*) new IntExpression(new IntNumber(this->popExpression()), 
+                                                 (Operator) this->popExpression(), 
+                                                 new IntNumber(this->popExpression()));
+
+          evaluation = (AtomicValue*) new IntExpression(new IntNumber(evaluation->evaluate()),
+                                                        newOp,
+                                                        new IntNumber(rhs->evaluate()));
+        }
+        else
+        {
+          std::cerr << "ERR: Expression enclosed in \'(\' and \')\' must be of the form: <Number> <Operator> <Number>" << std::endl;
+
+          delete evaluation;
+          delete this;
+
+          exit(EXIT_FAILURE);
+        }
+
+        this->popExpression(); // Remove ')'
+      }
+    }
+    else
+      break;
   }
 
-  expression.erase(expression.begin());
-
-  return auxEvaluate(expression);
+  int result = evaluation->evaluate();
+  
+  if (evaluation) delete evaluation;
+  
+  return result;
 };
 
 bool Parser::isNumber(char token)

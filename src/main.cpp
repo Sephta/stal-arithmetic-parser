@@ -103,8 +103,7 @@ int main(int argc, char** argv)
 
   Parser* parser = new Parser(expression);
 
-  cerr << "Evaluating Parser: " << endl;
-  parser->evaluate();
+  cerr << "Evaluating Parser: " << parser->evaluate() << endl;
 
   // PROGRAM CLEANUP
   cout << endl << "Cleaning program..." << endl;

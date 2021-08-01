@@ -58,7 +58,7 @@ class IntExpression : AtomicValue
     IntNumber* rhs;
 
   public:
-    IntExpression(Operator op, IntNumber* lhs, IntNumber* rhs);
+    IntExpression(IntNumber* lhs, Operator op, IntNumber* rhs);
     virtual ~IntExpression();
 
     virtual int evaluate();
@@ -81,7 +81,7 @@ class Parser
   int evaluate();
 
   private:
-    int auxEvaluate(std::string expression);
+    char popExpression();
     bool isNumber(char token);
     bool isOperator(char token);
 };
