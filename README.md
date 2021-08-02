@@ -19,6 +19,20 @@ All of which can be chained together.
 ./parser -s "1 + (4 * 10) / (7 - 2)"
 ```
 
+Important Note: This parser does not follow PEMDAS mathmatical rules, any operation will have Left Hand Side priority. Here is an example:
+
+```sh
+./parser -s "3 + (4*5) / 9"
+
+# This should evaluate to: 5.22222222 because of order of oporations (PEMDAS)
+# Instead due to Left hand side priority it will evaluate to: 2.55555555
+
+# In practice this looks like so:
+#    3 + (4*5) / 9 => 
+#    3 + 20 / 9    =>
+#    23 / 9        => 2.55555555
+```
+
 ## How to Compile and Run
 
 This program was made using Windows Subsystem for Linux in a Ubuntu 20.04.1 LTS install. This program was written and compiled with `g++` using the following flags:
