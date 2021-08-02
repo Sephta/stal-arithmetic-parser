@@ -21,7 +21,7 @@ All of which can be chained together.
 
 ## How to Compile and Run
 
-This program was made using Windows Subsystem for Linux in a Ubuntu 20.04.1 LTS install. This program was written and compiled using the following flags:
+This program was made using Windows Subsystem for Linux in a Ubuntu 20.04.1 LTS install. This program was written and compiled with `g++` using the following flags:
 
 ```sh
 -g -W -Wall -std=c++11
