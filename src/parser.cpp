@@ -168,7 +168,7 @@ double Parser::evaluate()
       // popped above.
       if (this->isNumber(this->currentToken()))
       {
-        int lhs = evaluation->evaluate();
+        double lhs = evaluation->evaluate();
 
         if (evaluation) delete evaluation; // no memory leaking here  :) ... I think
 
@@ -186,7 +186,7 @@ double Parser::evaluate()
         // Makes sure its going to encounter an operator...
         if (this->isOperator(this->nextToken()))
         {
-          int lhs = evaluation->evaluate();
+          double lhs = evaluation->evaluate();
 
           if (evaluation) delete evaluation;
 
@@ -196,7 +196,7 @@ double Parser::evaluate()
 
           evaluation = (AtomicValue*) new Expression((AtomicValue*) new Number(lhs),
                                                      newOp,
-                                                     (AtomicValue*) new Number((int) rhs->evaluate()));
+                                                     (AtomicValue*) new Number(rhs->evaluate()));
 
           if (rhs) delete rhs; // no memory leaking here  :) ... hopefully
         }
